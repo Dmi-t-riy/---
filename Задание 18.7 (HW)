@@ -1,1 +1,164 @@
+import random
+
+# Список учеников
+students = ['Аполлон', 'Ярослав', 'Александра', 'Дарья', 'Ангелина']
+students.sort()
+
+# Список предметов
+classes = ['Математика', 'Русский язык', 'Информатика']
+
+# Пустой словарь с оценками по каждому ученику и предмету
+students_marks = {}
+
+# Генерация данных по оценкам:
+for student in students:
+    students_marks[student] = {}
+    for class_ in classes:
+        marks = [random.randint(1, 5) for _ in range(3)]  # Генерируем список из 3 случайных оценок
+        students_marks[student][class_] = marks
+
+# Функция для вывода всех оценок по ученикам
+def print_all_marks():
+    for student in students:
+        print(student)
+        for class_ in classes:
+            print(f'\t{class_} - {students_marks[student][class_]}')
+        print()
+
+# Функция для добавления оценки ученику по предмету
+def add_mark():
+    student = input('Введите имя ученика: ')
+    class_ = input('Введите предмет: ')
+    mark = int(input('Введите оценку: '))
+    if student in students_marks and class_ in students_marks[student]:
+        students_marks[student][class_].append(mark)
+        print(f'Для {student} по предмету {class_} добавлена оценка {mark}')
+    else:
+        print('ОШИБКА: неверное имя ученика или название предмета')
+
+# Функция для вывода среднего балла по всем предметам по каждому ученику
+def print_average_marks():
+    for student in students:
+        print(student)
+        for class_ in classes:
+            marks_sum = sum(students_marks[student][class_])
+            marks_count = len(students_marks[student][class_])
+            average = marks_sum / marks_count if marks_count != 0 else 0
+            print(f'{class_} - {average:.2f}')
+        print()
+
+# Функция для удаления оценки у ученика по предмету
+def delete_mark():
+    student = input('Введите имя ученика: ')
+    class_ = input('Введите предмет: ')
+    if student in students_marks and class_ in students_marks[student]:
+        print(f'Оценки для {student} по предмету {class_}: {students_marks[student][class_]}')
+        mark_index = int(input('Введите индекс оценки для удаления (начиная с 0): '))
+        if 0 <= mark_index < len(students_marks[student][class_]):
+            removed_mark = students_marks[student][class_].pop(mark_index)
+            print(f'Оценка {removed_mark} удалена')
+        else:
+            print('ОШИБКА: неверный индекс оценки')
+    else:
+        print('ОШИБКА: неверное имя ученика или название предмета')
+
+# Функция для редактирования оценки у ученика по предмету
+def edit_mark():
+    student = input('Введите имя ученика: ')
+    class_ = input('Введите предмет: ')
+    if student in students_marks and class_ in students_marks[student]:
+        print(f'Оценки для {student} по предмету {class_}: {students_marks[student][class_]}')
+        mark_index = int(input('Введите индекс оценки для редактирования (начиная с 0): '))
+        if 0 <= mark_index < len(students_marks[student][class_]):
+            new_mark = int(input('Введите новую оценку: '))
+            students_marks[student][class_][mark_index] = new_mark
+            print(f'Оценка обновлена на {new_mark}')
+        else:
+            print('ОШИБКА: неверный индекс оценки')
+    else:
+        print('ОШИБКА: неверное имя ученика или название предмета')
+
+# Функция для добавления нового ученика
+def add_student():
+    new_student = input('Введите имя нового ученика: ')
+    if new_student not in students_marks:
+        students.append(new_student)
+        students.sort()
+        students_marks[new_student] = {class_: [] for class_ in classes}
+        print(f'Ученик {new_student} добавлен')
+    else:
+        print('Ученик с таким именем уже существует')
+
+# Функция для удаления ученика
+def delete_student():
+    student = input('Введите имя ученика для удаления: ')
+    if student in students_marks:
+        students.remove(student)
+        del students_marks[student]
+        print(f'Ученик {student} удален')
+    else:
+        print('ОШИБКА: неверное имя ученика')
+
+# Функция для добавления нового предмета
+def add_class():
+    new_class = input('Введите название нового предмета: ')
+    if new_class not in classes:
+        classes.append(new_class)
+        for student in students_marks:
+            students_marks[student][new_class] = []
+        print(f'Предмет {new_class} добавлен')
+    else:
+        print('Предмет с таким названием уже существует')
+
+# Функция для удаления предмета
+def delete_class():
+    class_ = input('Введите название предмета для удаления: ')
+    if class_ in classes:
+        classes.remove(class_)
+        for student in students_marks:
+            del students_marks[student][class_]
+        print(f'Предмет {class_} удален')
+    else:
+        print('ОШИБКА: неверное название предмета')
+
+# Основной цикл программы
+print('''
+Список команд:
+1. Добавить оценку ученика по предмету
+2. Вывести средний балл по всем предметам по каждому ученику
+3. Вывести все оценки по всем ученикам
+4. Удалить оценку ученика по предмету
+5. Редактировать оценку ученика по предмету
+6. Добавить нового ученика
+7. Удалить ученика
+8. Добавить новый предмет
+9. Удалить предмет
+10. Выход из программы
+''')
+
+while True:
+    command = int(input('Введите команду: '))
+    if command == 1:
+        add_mark()
+    elif command == 2:
+        print_average_marks()
+    elif command == 3:
+        print_all_marks()
+    elif command == 4:
+        delete_mark()
+    elif command == 5:
+        edit_mark()
+    elif command == 6:
+        add_student()
+    elif command == 7:
+        delete_student()
+    elif command == 8:
+        add_class()
+    elif command == 9:
+        delete_class()
+    elif command == 10:
+        print('Выход из программы')
+        break
+    else:
+        print('ОШИБКА: неверная команда')
 
